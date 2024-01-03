@@ -72,6 +72,23 @@ namespace Sorting
             }
             Console.WriteLine();
         }
+        
+        public static int[] Add_Two (int[] array_1, int[] array_2)
+        {
+            int size_1 = array_1.Length;
+            int size_2 = array_2.Length;
+            int big_size = array_1.Length + array_2.Length;
+            int[] new_array = new int[big_size];
+            for (int i=0; i<size_1; i++)
+            {
+                new_array[i] = array_1[i];
+            }
+            for (int i=0; i<array_2.Length; i++)
+            {
+                new_array[size_1+i] = array_2[i];
+            }
+            return new_array;
+        }
 
         public static int[] Insertion_Sort(int[] array)
         {
@@ -191,23 +208,15 @@ namespace Sorting
             int[] new_big = Quick_Sort (big_array);
 
             int[] pivot_element = { pivot };
-            int[] result = new_small.Concat(pivot_element.Concat(new_big)).ToArray();
+            int[] result = Add_Two(new_small, Add_Two(pivot_element, new_big));
             return result;
         }
         
         public static int[] Heap_Sort(int[] array, bool first)
         {
-            for (int i=1; i<array.Length; i+=2)
+            for (int i=1; i< array.Length; i++)
             {
-                if (array[i]>0 & array[i]<array[i+1])
-                {
-                    int temp_el = array[i];
-                    array[i] = array[i+1];
-                    array[i+1] = temp_el;
-                }
-            }
-            for (int i=1; i< array.Length; i+=2)
-            {
+                Console.WriteLine(i);
                 if (i%2!=0)
                 {
                     if (array[i]>array[i-1])
@@ -265,15 +274,18 @@ namespace Sorting
                     int index_paste = array.Length-i-1;
                     good_arr[index_paste] = max;
                     new_array = Heap_Sort(new_array, false);
-                    max = Find_Max(new_array);
+                    Console.WriteLine(new_array.Length);
+                    if (new_array.Length>0)
+                    {
+                        max = new_array[0];
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 return good_arr;
             }
-        }
-        
-        public static int Find_Max(int[] array)
-        {
-            return array[0];
         }
     }
 }
