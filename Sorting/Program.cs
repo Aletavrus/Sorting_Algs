@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
+using System.Reflection;
 
 namespace Sorting
 {
@@ -7,18 +9,18 @@ namespace Sorting
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter size of array");
-            int size = int.Parse(Console.ReadLine());
             Console.WriteLine("Do you want to have randomly generated values in array? (answer with lower case letters)");
             string command = Console.ReadLine();
-            int[] array = new int[size];
+            int[] array = new int[1];
             if (command == "yes")
             {
+                Console.WriteLine("Enter size of array");
+                int size = int.Parse(Console.ReadLine());
                 array = CreateRandomArray(size);
             }
             else
             {
-                array = CreateArray(size);
+                array = CreateArray();
             }
             Print(array);
             Console.WriteLine("Which type of sorting algorithm do you want to use?");
@@ -39,6 +41,10 @@ namespace Sorting
             {
                 array = Heap_Sort(array, true);
             }
+            if (type=="shell")
+            {
+                array = Shell_Sort(array);
+            }
 
             Print(array);
         }
@@ -53,13 +59,13 @@ namespace Sorting
             }
             return array;
         }
-        public static int[] CreateArray(int size)
+        public static int[] CreateArray()
         {
             Console.WriteLine("Enter a list");
             string input = Console.ReadLine();
             string[] split_input = input.Split();
-            int[] array = new int[size];
-            for (int i = 0; i < size; i++)
+            int[] array = new int[split_input.Length];
+            for (int i = 0; i < split_input.Length; i++)
             {
                 array[i] = int.Parse(split_input[i]);
             }
@@ -317,6 +323,44 @@ namespace Sorting
                 }
                 return good_arr;
             }
+        }
+
+        public static int[] Shell_Sort(int[] array)
+        {
+            int gap = array.Length / 2;
+            while (gap > 1)
+            {
+                int[] sizes = new int[gap];
+                for (int j = 0; j < gap; j++)
+                {
+                    for (int i = j; i < array.Length; i += gap)
+                    {
+                        sizes[j]++;
+                    }
+                }
+
+                for (int j = 0; j < gap; j++)
+                {
+                    int[] new_array = new int[sizes[j]];
+                    int index = 0;
+                    for (int i = j; i < array.Length; i += gap)
+                    {
+                        new_array[index] = array[i];
+                        index++;
+                    }
+                    new_array = Insertion_Sort(new_array);
+                    index = 0;
+                    for (int i = j; i < array.Length; i += gap)
+                    {
+                        array[i] = new_array[index];
+                        index++;
+                    }
+                }
+                gap = gap / 2;
+            }
+            array = Insertion_Sort(array);
+
+            return array;
         }
     }
 }
